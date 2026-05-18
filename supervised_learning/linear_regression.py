@@ -36,12 +36,14 @@ class LinearRegression:
         self.rss = np.sum((y - y_hat) ** 2)
         self.tss = np.sum((y - np.mean(y)) ** 2)
         df = self.data_n - self.p - 1
-        sigma2 = self.rss / df
-        self.beta_varmatrix = X_T_X_inv * sigma2
+        sigma_sq = self.rss / df
+        self.beta_varmatrix = X_T_X_inv * sigma_sq
         self.stderr = np.sqrt(np.diagonal(self.beta_varmatrix)).reshape(-1,1)
         self.tscores = self.beta / self.stderr
         self.pvals = stats.t.sf(np.abs(self.tscores),df=df) * 2
         
+        pass
+
     #Recieves: Data to predict y value
     #Does: Using the precalculated beta vector, calculates the estimation of y
     #Returns: The predicted y value
