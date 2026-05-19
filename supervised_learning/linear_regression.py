@@ -15,7 +15,7 @@ class LinearRegression:
         
         pass
 
-    #Recieves: Training data (the X and the y)
+    #Recieves: Training data (the X and the y), MUST BE MATRICES
     #Does: Calculates important statistics including the beta, variance of beta, etc.
     #Returns: Nothing
     def fit(self,X,y):
@@ -29,7 +29,7 @@ class LinearRegression:
         X_T_X_inv = np.linalg.inv(X_T @ X_design)
 
         self.beta = X_T_X_inv @ (X_T @ y)
-        self.beta = self.beta.reshape(-1,1)
+        ##self.beta = self.beta[:,np.newaxis]
 
         y_hat = X_design @ self.beta
         
@@ -38,7 +38,7 @@ class LinearRegression:
         df = self.data_n - self.p - 1
         sigma_sq = self.rss / df
         self.beta_varmatrix = X_T_X_inv * sigma_sq
-        self.stderr = np.sqrt(np.diagonal(self.beta_varmatrix)).reshape(-1,1)
+        self.stderr = np.sqrt(np.diagonal(self.beta_varmatrix))
         self.tscores = self.beta / self.stderr
         self.pvals = stats.t.sf(np.abs(self.tscores),df=df) * 2
         
@@ -50,11 +50,6 @@ class LinearRegression:
     def predict(self, X):
         if self.beta is None:
             print("First run the fit function to calculate coefficient estimates.")
-
-        X = np.asarray(X)
-
-        if X.ndim == 1:
-            X = X.reshape(1,-1)
 
         n = X.shape[0]
         X_design = np.empty((n,X.shape[1]+1))
@@ -87,6 +82,7 @@ def main():
     X_design = np.empty((n,p+1))
     X_design[:, 0] = 1.0
     X_design[:, 1:] = X    
+
 
     noise = rng.normal(0,noise_var,(n,1))
 
