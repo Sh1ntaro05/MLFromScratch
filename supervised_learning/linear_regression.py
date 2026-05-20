@@ -50,7 +50,8 @@ class LinearRegression:
     def predict(self, X):
         if self.beta is None:
             print("First run the fit function to calculate coefficient estimates.")
-
+            return 
+        
         n = X.shape[0]
         X_design = np.empty((n,X.shape[1]+1))
         X_design[:,0] = 1.0
@@ -81,7 +82,9 @@ def main():
     X = 10 * rng.random((n,p))
     X_design = np.empty((n,p+1))
     X_design[:, 0] = 1.0
-    X_design[:, 1:] = X    
+    X_design[:, 1:] = X   
+
+    #print(type(X)) 
 
 
     noise = rng.normal(0,noise_var,(n,1))
