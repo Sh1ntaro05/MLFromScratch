@@ -84,9 +84,6 @@ def main():
     X_design[:, 0] = 1.0
     X_design[:, 1:] = X   
 
-    #print(type(X)) 
-
-
     noise = rng.normal(0,noise_var,(n,1))
 
     y = X_design @ beta + noise
