@@ -22,13 +22,19 @@ To maximize understanding of both machine learning mathematics and high-performa
 The directory is flatly categorized by learning paradigms to optimize scannability and avoid multi-layered nested folder paths:
 
 ```text
-ml-from-scratch/
+MLFromScratch/
 ├── supervised_learning/
-│   ├── linear_regression.py      # Normal Equation solver with full diagnostics
-│   └── tree_algorithms/          # (Coming Soon) Recursive pointer-based branching
+│   ├── linear_regression.py  
+│   ├── decision_tree_classifier.py  
+│   └── logistic_regression.py          
 │
-├── unsupervised_learning/        # (Coming Soon) Clustering and dimensionality primitives
+├── unsupervised_learning/        
 │
-├── reinforcement_learning/       # (Coming Soon) Exact DP and model-free decision engines
+├── reinforcement_learning/       
 │
-└── deep_learning/                # (Coming Soon) Vectorized neural layers & backprop graph
+├── deep_learning/   
+│
+├── utilities/ 
+│
+└── assets/
+           
