@@ -20,20 +20,18 @@ class DecisionTreeClassifier:
         self.n = None
         self.p = None
         self.K = None
-        #self.criterion = None
 
         pass
 
     def fit(self,X,y,criterion='entropy',max_depth=2):
         self.n = X.shape[0]
         self.p = X.shape[1]
-        self.classes = np.unique(y)
-        self.K = len(self.classes)
+        #self.classes = np.unique(y)
+        #self.K = len(self.classes)
         whole_data = np.hstack((X,y))
         if(criterion != 'entropy' and criterion != 'gini'):
             print("Criterion must be entropy or gini")
             return
-        #self.criterion = criterion
         self.root = Node(data=whole_data,depth=1)
 
         if(criterion == 'entropy'):
@@ -84,7 +82,6 @@ class DecisionTreeClassifier:
         
         rng = np.random.default_rng()
         return rng.choice(values[mask])
-
 
     #Recieves: Data to predict the label
     #Does: Labels the test data using the preconstructed DTC
@@ -144,7 +141,6 @@ class DecisionTreeClassifier:
         best_right_score = None
 
         for i in range(self.p):
-            #print(data[i])
             thres_candidates = np.unique(data[:,i])
             for thres in thres_candidates:
                 left_mask = data[:,i] <= thres
