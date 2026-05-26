@@ -29,7 +29,7 @@ class LinearRegression:
         X_T_X_inv = np.linalg.inv(X_T @ X_design)
 
         self.beta = X_T_X_inv @ (X_T @ y)
-        ##self.beta = self.beta[:,np.newaxis]
+        #self.beta = self.beta[:,np.newaxis]
 
         y_hat = X_design @ self.beta
         
