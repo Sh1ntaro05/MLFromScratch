@@ -2,7 +2,24 @@ import numpy as np
 from utilities.cross_entropy_error import cross_entropy_error
 from utilities.softmax import softmax 
 
-class MulLayer:
+class Layer:
+    def __init__(self):
+        pass 
+
+    def forward(self, x, y):
+        pass 
+
+    def backward(self, dout):
+        pass
+
+    def get_params(self):
+        pass
+
+    def get_grads(self):
+        pass
+
+
+class MulLayer(Layer):
     def __init__(self):
         self.x = None 
         self.y = None 
@@ -17,8 +34,14 @@ class MulLayer:
         dx = dout * self.x 
         dy = dout * self.y 
         return dx, dy 
+    
+    def get_params(self):
+        return []
 
-class AddLayer:
+    def get_grads(self):
+        return []
+
+class AddLayer(Layer):
     def __init__(self):
         pass 
 
@@ -30,8 +53,14 @@ class AddLayer:
         dx = dout * 1
         dy = dout * 1 
         return dx, dy 
+
+    def get_params(self):
+        return []
     
-class ReLULayer:
+    def get_grads(self):
+        return []
+    
+class ReLULayer(Layer):
     def __init__(self):
         self.mask = None 
     
@@ -46,7 +75,13 @@ class ReLULayer:
         dx = dout 
         return dx 
 
-class SigmoidLayer: 
+    def get_params(self):
+        return []
+    
+    def get_grads(self):
+        return []
+
+class SigmoidLayer(Layer): 
     def __init__(self):
         self.out = None 
     
@@ -59,7 +94,13 @@ class SigmoidLayer:
         dx = dout * (1 - self.out) * self.out 
         return dx 
 
-class AffineLayer:
+    def get_params(self):
+        return []
+    
+    def get_grads(self):
+        return []
+
+class AffineLayer(Layer):
     def __init__(self, W, b):
         self.W = W
         self.b = b
@@ -74,11 +115,17 @@ class AffineLayer:
 
     def backward(self, dout):
         dx = np.dot(dout, self.W.T)
-        self.W = np.dot(self.x.T, dout)
+        self.dW = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axis=0)
-        return dx 
+        return dx
 
-class SoftmaxWithLossLayer:
+    def get_params(self):
+        return [self.W, self.b]
+    
+    def get_grads(self):
+        return [self.dW, self.db]
+
+class SoftmaxWithLossLayer(Layer):
     def __init__(self):
         self.loss = None 
         self.y = None 
@@ -94,5 +141,11 @@ class SoftmaxWithLossLayer:
         batch_size = self.t.shape[0]
         dx = (self.y - self.t) / batch_size
         return dx 
+    
+    def get_params(self):
+        return []
+    
+    def get_grads(self):
+        return []
         
-        
+    
