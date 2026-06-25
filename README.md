@@ -1,40 +1,54 @@
-# Machine Learning from Scratch: Matrix Primitives to Native Execution
+# Machine Learning from Scratch
 
-A collection of foundational machine learning algorithms implemented entirely from scratch. This repository is developed using a strict, two-phase evolutionary design pattern to isolate mathematical prototyping from low-level infrastructure and memory architecture.
+A collection of foundational machine learning algorithms implemented entirely from scratch in Python.
 
-## Architectural Vision & Roadmap
+## Architectural Vision
 
-To maximize understanding of both machine learning mathematics and high-performance computing, every algorithm in this repository undergoes a two-stage lifecycle:
+This repository is built strictly for **educational purposes and radical transparency**. The primary goal is to bridge the gap between abstract mathematical theory and code execution. Rather than relying on black-box industry frameworks, the algorithms in this repository are implemented using raw NumPy matrix operations. 
 
-1. **Phase 1: Mathematical Validation (Python + Strict 2D NumPy)**
-   * Implementing core equations, loss tracking, and statistical estimators using clean vector abstractions.
-   * **Rule of Design:** All vectors are strictly enforced as 2D matrices (`shape=(N, 1)` or `shape=(1, N)`) from day one. This keeps the execution linear and prevents dimension decay, smoothing the eventual transition to native code.
-
-2. **Phase 2: High-Performance Infrastructure Swap (C++ + `pybind11`)**
-   * Building a lightweight, proprietary BLAS (Basic Linear Algebra Subprograms) engine from raw primitives in C++ (`custom_numpy`).
-   * Implementing explicit cache-aligned structures, row-major flat data vectors, operator overloading (`*` for matrix multiplication), and the **Rule of 5** for manual heap/move memory management.
-   * Exposing the native backend to Python via `pybind11` using a zero-copy data pointer transfer interface, allowing a seamless drop-in replacement: changing `import numpy as np` to `import custom_numpy as np`.
-
----
+This architecture allows students, developers, and researchers to read the source code and directly observe how the underlying calculus, linear algebra, and optimization mechanisms execute under the hood. 
 
 ## Repository Structure
 
-The directory is flatly categorized by learning paradigms to optimize scannability and avoid multi-layered nested folder paths:
+The directory is flatly categorized by learning paradigms to optimize scannability and avoid convoluted, multi-layered nested folder paths:
 
 ```text
 MLFromScratch/
 ├── supervised_learning/
-│   ├── linear_regression.py  
 │   ├── decision_tree_classifier.py  
-│   └── logistic_regression.py          
+│   ├── linear_regression.py  
+│   ├── logistic_regression.py  
+│   ├── QDA_classifier.py
+│   └── random_forest_classifier.py         
 │
 ├── unsupervised_learning/        
 │
 ├── reinforcement_learning/       
 │
-├── deep_learning/   
+├── deep_learning/
+│   ├── optimizers.py 
+│   ├── layers.py 
+│   ├── MLP_classifier.py  
+│   └── MLP_regression.py 
 │
 ├── utilities/ 
+│   ├── cross_entropy_error.py 
+│   ├── data_split.py 
+│   └── softmax.py 
 │
 └── assets/
-           
+    └── iris_dataset/
+
+## Roadmap
+The framework is actively expanding. Upcoming implementations include:
+* **Unsupervised Learning:** K-Means Clustering, Principal Component Analysis (PCA)
+* **Reinforcement Learning:** Policy and Value Iteration (MDPs), Q-Learning, Deep RL architectures
+
+## Installation & Usage
+This project utilizes `uv` for lightning-fast Python environment management, and relies on a minimal tech stack (`numpy`, `pandas`, `scikit-learn` for data fetching).
+
+1. Clone the repository and navigate to the root directory.
+2. Ensure you have `uv` installed on your system.
+3. Execute scripts as modules from the project root. For example, to run the Multilayer Perceptron classifier:
+```bash
+uv run -m deep_learning.MLP_classifier
