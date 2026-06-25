@@ -38,6 +38,7 @@ MLFromScratch/
 │
 └── assets/
     └── iris_dataset/
+```
 
 ## Roadmap
 The framework is actively expanding. Upcoming implementations include:
