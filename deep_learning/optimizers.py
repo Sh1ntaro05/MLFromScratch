@@ -25,6 +25,15 @@ class Momentum(Optimizer):
         self.v = None 
 
     def update(self, params, grads):
+        if self.v is None:
+            self.v = []
+            for i in range(len(params)):
+                self.v.append(np.zeros_like(params[i]))
+        
+        for i in range(len(params)):
+            self.v[i] = self.momentum * self.v[i] - self.lr * grads[i]
+            params[i] += self.v[i]
+    
         pass
 
 
@@ -34,6 +43,15 @@ class AdaGrad(Optimizer):
         self.h = None 
     
     def update(self, params, grads):
+        if self.h is None:
+            self.h = []
+            for i in range(len(params)):
+                self.h.append(np.zeros_like(params[i]))
+        
+        for i in range(len(params)):
+            self.h[i] += grads[i] * grads[i]
+            params[i] -= self.lr * grads[i] / (np.sqrt(self.h[i]) + 1e-7)
+
         pass 
 
 
