@@ -21,7 +21,8 @@ MLFromScratch/
 │   ├── QDA_classifier.py
 │   └── random_forest_classifier.py         
 │
-├── unsupervised_learning/        
+├── unsupervised_learning/  
+│   └── kmeans_clustering.py       
 │
 ├── reinforcement_learning/       
 │
