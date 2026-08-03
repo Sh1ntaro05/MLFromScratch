@@ -23,7 +23,7 @@ class DecisionTreeClassifier:
 
         pass
 
-    def fit(self,X,y,criterion='entropy',max_depth=2):
+    def fit(self,X,y,criterion='entropy',max_depth=2,min_samples_split=2):
         self.n = X.shape[0]
         self.p = X.shape[1]
         #self.classes = np.unique(y)
@@ -36,18 +36,18 @@ class DecisionTreeClassifier:
 
         if(criterion == 'entropy'):
             self.root.score = self.get_entropy(self.root.data[:,-1])
-            self.root.left,self.root.right = self.build_tree(self.root,max_depth,self.get_entropy)
+            self.root.left,self.root.right = self.build_tree(self.root,max_depth,min_samples_split,self.get_entropy)
         elif(criterion == 'gini'):
             self.root.score = self.get_gini(self.root.data[:,-1])
-            self.root.left,self.root.right = self.build_tree(self.root,max_depth,self.get_gini)
+            self.root.left,self.root.right = self.build_tree(self.root,max_depth,min_samples_split,self.get_gini)
 
         pass
 
     #Recieves: Current node, maxdepth, and the score function to use(gini or entropy)
     #Does: Recursively builds the decision tree
     #Returns: A tuple: (leftnode, rightnode) (Null node if terminal conditions are met)
-    def build_tree(self,curr_node,max_depth,score_func):
-        if curr_node.score == 0.0 or curr_node.depth == max_depth:
+    def build_tree(self,curr_node,max_depth,min_samples_split,score_func):
+        if curr_node.score < 1e-9 or curr_node.depth == max_depth or len(curr_node.data) < min_samples_split:
             curr_node.value = self.get_majority_vote(curr_node.data[:,-1])
             curr_node.data = None
             return (None,None)
@@ -66,8 +66,8 @@ class DecisionTreeClassifier:
         curr_node.thres = thres
         curr_node.data = None
         
-        left_node.left,left_node.right = self.build_tree(left_node,max_depth,score_func)
-        right_node.left,right_node.right = self.build_tree(right_node,max_depth,score_func)
+        left_node.left,left_node.right = self.build_tree(left_node,max_depth,min_samples_split,score_func)
+        right_node.left,right_node.right = self.build_tree(right_node,max_depth,min_samples_split,score_func)
         return (left_node,right_node)
     
     #Recieves: The label portion of a subset of the original data
@@ -147,6 +147,9 @@ class DecisionTreeClassifier:
                 right_mask = data[:,i] > thres
                 left_data = data[left_mask]
                 right_data = data[right_mask]
+
+                if len(left_data) == 0 or len(right_data) == 0:
+                    continue
                 
                 left_weight = len(left_data) / data_num
                 right_weight = len(right_data) / data_num
@@ -184,7 +187,7 @@ def main():
     X_train,X_test,y_train,y_test = data_split(X,y)
 
     DTC = DecisionTreeClassifier()
-    DTC.fit(X_train,y_train,criterion='gini',max_depth=10)
+    DTC.fit(X_train,y_train,criterion='gini',max_depth=2,min_samples_split=3)
 
     y_hat = DTC.predict(X_test)
     print(f"Accuracy: {np.sum(y_hat == y_test) / y_test.shape[0]}")
