@@ -19,20 +19,26 @@ class DecisionTreeClassifier:
         self.root = None
         self.n = None
         self.p = None
-        self.K = None
+        #self.K = None
+        self.rng = None
+        self.max_features = None
 
         pass
 
-    def fit(self,X,y,criterion='entropy',max_depth=2,min_samples_split=2):
+    def fit(self,X,y,criterion='entropy',max_depth=2,min_samples_split=2,seed=1,max_features=None):
         self.n = X.shape[0]
         self.p = X.shape[1]
         #self.classes = np.unique(y)
         #self.K = len(self.classes)
+        self.rng = np.random.default_rng(seed)
+        
+        self.max_features = max_features if max_features is not None else self.p
         whole_data = np.hstack((X,y))
+        self.root = Node(data=whole_data,depth=1)
         if(criterion != 'entropy' and criterion != 'gini'):
             print("Criterion must be entropy or gini")
             return
-        self.root = Node(data=whole_data,depth=1)
+        
 
         if(criterion == 'entropy'):
             self.root.score = self.get_entropy(self.root.data[:,-1])
@@ -140,7 +146,9 @@ class DecisionTreeClassifier:
         best_left_score = None
         best_right_score = None
 
-        for i in range(self.p):
+        chosen_features = self.rng.choice(self.p,size=self.max_features,replace=False)
+
+        for i in chosen_features:
             thres_candidates = np.unique(data[:,i])
             for thres in thres_candidates:
                 left_mask = data[:,i] <= thres
