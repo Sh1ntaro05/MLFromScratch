@@ -14,7 +14,7 @@ class RandomForestClassifier:
         self.num_trees = None
         self.rng = None
 
-    def fit(self,X,y,num_trees,criterion='entropy',max_depth=2,seed=1):
+    def fit(self,X,y,num_trees,criterion='entropy',max_depth=2,min_samples_split=2,seed=1):
         self.n = X.shape[0]
         self.p = X.shape[1]
         self.m = (int) (np.sqrt(self.p))
@@ -33,10 +33,10 @@ class RandomForestClassifier:
             self.tree_roots[i] = Node(data=bootstraped_data,depth=1)
             if(criterion == 'entropy'):
                 self.tree_roots[i].score = self.get_entropy(self.tree_roots[i].data[:,-1])
-                self.tree_roots[i].left,self.tree_roots[i].right = self.build_tree(self.tree_roots[i],max_depth,self.get_entropy)
+                self.tree_roots[i].left,self.tree_roots[i].right = self.build_tree(self.tree_roots[i],max_depth,min_samples_split,self.get_entropy)
             elif(criterion == 'gini'):
                 self.tree_roots[i].score = self.get_gini(self.tree_roots[i].data[:,-1])
-                self.tree_roots[i].left,self.tree_roots[i].right = self.build_tree(self.tree_roots[i],max_depth,self.get_gini)
+                self.tree_roots[i].left,self.tree_roots[i].right = self.build_tree(self.tree_roots[i],max_depth,min_samples_split,self.get_gini)
         return
 
 
@@ -53,7 +53,7 @@ class RandomForestClassifier:
     #Recieves: Current node, maxdepth, and the score function to use(gini or entropy)
     #Does: Recursively builds the decision tree
     #Returns: A tuple: (leftnode, rightnode) (Null node if terminal conditions are met)
-    def build_tree(self,curr_node,max_depth,score_func):
+    def build_tree(self,curr_node,max_depth,min_samples_split,score_func):
         if curr_node.score == 0.0 or curr_node.depth == max_depth:
             curr_node.value = self.get_majority_vote(curr_node.data[:,-1])
             curr_node.data = None 
@@ -73,8 +73,8 @@ class RandomForestClassifier:
         curr_node.thres = thres 
         curr_node.data = None 
 
-        left_node.left,left_node.right = self.build_tree(left_node,max_depth,score_func)
-        right_node.left,right_node.right = self.build_tree(right_node,max_depth,score_func)
+        left_node.left,left_node.right = self.build_tree(left_node,max_depth,min_samples_split,score_func)
+        right_node.left,right_node.right = self.build_tree(right_node,max_depth,min_samples_split,score_func)
         return (left_node,right_node)
 
 
