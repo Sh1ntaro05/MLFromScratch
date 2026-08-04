@@ -129,7 +129,7 @@ class DecisionTreeClassifier:
     def get_entropy(self,labels):
         num_labels = len(labels)
         _, counts = np.unique(labels, return_counts=True)
-        probabilties = counts / num_labels
+        probabilties = counts / num_labels + 1e-9
         return np.sum(-probabilties * np.log2(probabilties))
 
     #Recieves: Data to find the best split on(the right-most column of the data are the labels) and the score function to use(gini or entropy)
