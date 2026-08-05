@@ -55,14 +55,14 @@ class DecisionTreeClassifier:
     def build_tree(self,curr_node,max_depth,min_samples_split,score_func):
         if curr_node.score < 1e-9 or curr_node.depth == max_depth or len(curr_node.data) < min_samples_split:
             curr_node.value = self.get_majority_vote(curr_node.data[:,-1])
-            curr_node.data = None
+            #curr_node.data = None
             return (None,None)
         
         left_data,right_data,left_score,right_score,feature,thres = self.find_best_condition(curr_node.data,score_func)
         
         if feature is None:
             curr_node.value = self.get_majority_vote(curr_node.data[:,-1])
-            curr_node.data = None
+            #curr_node.data = None
             return (None,None)
 
         left_node = Node(data=left_data,score=left_score,depth=curr_node.depth+1)
@@ -101,6 +101,29 @@ class DecisionTreeClassifier:
             predictions[i] = self.predict_row(self.root, X[i])
         
         return predictions
+
+
+    def predict_proba(self, X, target_class):
+        n = X.shape[0]
+
+        probabilities = np.empty((n,1),dtype=object)
+
+        for i in range(n):
+            probabilities[i] = self.predict_proba_row(self.root, X[i], target_class)
+
+        return probabilities
+
+
+    def predict_proba_row(self, node, row, target_class):
+        if node.value != None:
+            if len(node.data) == 0: return 0.0
+            else: return (np.sum(node.data[:,-1] == target_class) / len(node.data))
+
+        if row[node.feature] <= node.thres:
+            return self.predict_proba_row(node.left, row, target_class)
+        else:
+            return self.predict_proba_row(node.right, row, target_class)
+
     
     #Recieves: One row to predict label
     #Does: Goes through the preconstructed DTC recursively and returns label
@@ -199,6 +222,8 @@ def main():
 
     y_hat = DTC.predict(X_test)
     print(f"Accuracy: {np.sum(y_hat == y_test) / y_test.shape[0]}")
+
+    print(f"{DTC.predict_proba(X_test,'Iris-setosa')}")
     
     pass
 
